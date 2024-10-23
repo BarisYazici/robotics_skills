@@ -1,14 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Button,
-  Input,
-  Label,
-  Badge,
-} from '../components/ui';
 
 const DemonstratePage = () => {
   const [recording, setRecording] = useState(false);
@@ -16,7 +6,8 @@ const DemonstratePage = () => {
   const [newSkillName, setNewSkillName] = useState('');
   const [datasetName, setDatasetName] = useState('');
   const [recordedSamples, setRecordedSamples] = useState(0);
-  const [robotStatus, setRobotStatus] = useState('ready'); // 'ready', 'calibrating', 'recording'
+  const [robotStatus, setRobotStatus] = useState('ready');
+  const [recordings, setRecordings] = useState([]);
 
   const handleCalibrate = () => {
     setCalibrating(true);
@@ -45,28 +36,36 @@ const DemonstratePage = () => {
   const handleStopRecording = () => {
     setRecording(false);
     setRobotStatus('ready');
+
+    // Add the new recording to the recordings list
+    const newRecording = {
+      id: Date.now(),
+      skillName: newSkillName,
+      datasetName: datasetName,
+      samples: recordedSamples,
+      date: new Date().toISOString(),
+      size: `${(recordedSamples * 0.5).toFixed(1)} MB`
+    };
+
+    setRecordings(prev => [newRecording, ...prev]);
+    setNewSkillName('');
+    setDatasetName('');
+    setRecordedSamples(0);
   };
 
   return (
-    <div className="demo-page">
-      <div className="demo-header">
-        <h1 className="page-title">Demonstrate New Skills</h1>
-        <div className={`status-badge ${robotStatus}`}>
-          Status: {robotStatus.charAt(0).toUpperCase() + robotStatus.slice(1)}
-        </div>
-      </div>
-
-      <div className="demo-layout">
-        {/* Recording Controls */}
-        <div className="demo-card">
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Demonstrate New Skills</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="fine-tune-card">
           <h2 className="card-title">Record New Skill</h2>
           <div className="card-content">
             <div className="input-group">
               <label className="input-label">Skill Name</label>
               <input
                 type="text"
-                className="input-field"
                 placeholder="Enter new skill name"
+                className="input-field"
                 value={newSkillName}
                 onChange={(e) => setNewSkillName(e.target.value)}
                 disabled={recording}
@@ -77,8 +76,8 @@ const DemonstratePage = () => {
               <label className="input-label">Dataset Name</label>
               <input
                 type="text"
-                className="input-field"
                 placeholder="Enter dataset name"
+                className="input-field"
                 value={datasetName}
                 onChange={(e) => setDatasetName(e.target.value)}
                 disabled={recording}
@@ -95,7 +94,7 @@ const DemonstratePage = () => {
               </button>
 
               <button
-                className={`apple-button primary ${recording ? 'recording' : ''}`}
+                className={`apple-button ${recording ? 'recording' : 'primary'}`}
                 onClick={recording ? handleStopRecording : handleStartRecording}
                 disabled={!newSkillName || !datasetName || calibrating}
               >
@@ -105,8 +104,7 @@ const DemonstratePage = () => {
           </div>
         </div>
 
-        {/* Recording Status */}
-        <div className="demo-card">
+        <div className="fine-tune-card">
           <h2 className="card-title">Recording Status</h2>
           <div className="card-content">
             {recording ? (
@@ -116,11 +114,11 @@ const DemonstratePage = () => {
                   Recording in progress
                 </div>
                 <div className="samples-counter">
-                  <span className="counter-label">Samples Recorded</span>
-                  <span className="counter-value">{recordedSamples}</span>
+                  <div className="counter-label">Samples Recorded</div>
+                  <div className="counter-value">{recordedSamples}</div>
                 </div>
                 <div className="progress-bar">
-                  <div 
+                  <div
                     className="progress-fill"
                     style={{ width: `${recordedSamples}%` }}
                   ></div>
@@ -135,13 +133,31 @@ const DemonstratePage = () => {
         </div>
       </div>
 
-      {/* Recent Recordings */}
-      <div className="demo-card recordings-section">
+      <div className="fine-tune-card">
         <h2 className="card-title">Recent Recordings</h2>
         <div className="card-content">
-          <div className="no-recordings">
-            No recordings yet
-          </div>
+          {recordings.length > 0 ? (
+            <div className="recordings-list">
+              {recordings.map((recording) => (
+                <div key={recording.id} className="recording-item">
+                  <div className="recording-info">
+                    <h3 className="recording-title">{recording.skillName}</h3>
+                    <p className="recording-dataset">Dataset: {recording.datasetName}</p>
+                    <p className="recording-details">
+                      {new Date(recording.date).toLocaleDateString()} • {recording.samples} samples • {recording.size}
+                    </p>
+                  </div>
+                  <button className="apple-button secondary">
+                    View Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-recordings">
+              No recordings yet
+            </div>
+          )}
         </div>
       </div>
     </div>

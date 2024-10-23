@@ -212,7 +212,8 @@
   padding: 0.625rem 1.25rem;
   background: var(--apple-blue);
   color: white;
-  border-radius: 980px; /* Apple's signature rounded button style */
+  border-radius: 980px;
+  /* Apple's signature rounded button style */
   font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.2s ease;
@@ -449,10 +450,12 @@
 
 /* Animations */
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -698,9 +701,11 @@
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
+
   100% {
     opacity: 1;
   }
@@ -925,9 +930,11 @@
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
+
   100% {
     opacity: 1;
   }
@@ -948,4 +955,52 @@
   .page-title {
     font-size: 2rem;
   }
+}
+
+
+/* Demonstrate */
+
+.recordings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recording-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.recording-item:last-child {
+  border-bottom: none;
+}
+
+.recording-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.recording-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.recording-dataset {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.recording-details {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.no-recordings {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
 }
